@@ -1,0 +1,22 @@
+[
+  {
+    "keys": ["^", "^"],
+    "command": "insert_snippet", "args": {"contents": "^{$0}<++>"},
+    "context": [
+      {"key": "eol_selector", "match_all": true, "operand": "comment.line.percentage", "operator": "not_equal"},
+      {"key": "selection_empty", "match_all": true, "operand": true, "operator": "equal"},
+      {"key": "selector", "operand": "string.other.math", "operator": "equal"},
+      {"key": "setting.auto_match_enabled", "operand": true, "operator": "equal"}
+    ]
+  },
+  {
+    "keys": ["_", "_"],
+    "command": "insert_snippet", "args": {"contents": "_{$0}<++>"},
+    "context": [
+      {"key": "eol_selector", "match_all": true, "operand": "comment.line.percentage", "operator": "not_equal"},
+      {"key": "selection_empty", "match_all": true, "operand": true, "operator": "equal"},
+      {"key": "selector", "operand": "string.other.math", "operator": "equal"},
+      {"key": "setting.auto_match_enabled", "operand": true, "operator": "equal"}
+    ]
+  }
+]
