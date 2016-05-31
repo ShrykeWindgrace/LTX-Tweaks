@@ -18,5 +18,11 @@
       {"key": "selector", "operand": "string.other.math", "operator": "equal"},
       {"key": "setting.auto_match_enabled", "operand": true, "operator": "equal"}
     ]
+  },
+  {
+    "keys": "ctrl+j",
+    "command": "jump_to_dummy",
+    // "context": 
   }
+
 ]
