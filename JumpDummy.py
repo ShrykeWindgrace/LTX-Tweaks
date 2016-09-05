@@ -18,6 +18,27 @@ class UpgradeBracketsCommand(sublime_plugin.TextCommand):
     brackets = [('(', ')'), ('[', ']'), ('ltext', 'rtext')]
 
     def run(self, edit):
+        def find_right_bracket(s):
+            global brackets
+            i = 0
+            right_brackets = [pairs[1] for pairs in brackets]
+            while i < len(s):
+                for br in right_brackets:
+                    if s[i:].startswith(br):
+                        return (i, br)
+                i += 1
+            return -1, False
+
+        def find_left_bracket(s):
+            global brackets
+            i = len(s)
+            left_brackets = [pairs[0] for pairs in brackets]
+            while i > -1:
+                for br in left_brackets:
+                    if s[:i].endswith(br):
+                        return (i - len(br), br)
+                i -= 1
+            return -1, False
         region = self.view.sel()[0]   # current cursor position (assuming no text selection)
         global_string = self.view.line(region)
         l, brl = find_left_bracket(global_string[:region.begin()])
@@ -26,24 +47,3 @@ class UpgradeBracketsCommand(sublime_plugin.TextCommand):
             self.view.insert(edit, l, " \\left ")
             self.view.insert(edit, r, " \\right ")
 
-    def find_right_bracket(s):
-        global brackets
-        i = 0
-        right_brackets = [pairs[1] for pairs in brackets]
-        while i < len(s):
-            for br in right_brackets:
-                if s[i:].startswith(br):
-                    return (i, br)
-            i += 1
-        return -1, False
-
-    def find_left_bracket(s):
-        global brackets
-        i = len(s)
-        left_brackets = [pairs[0] for pairs in brackets]
-        while i > -1:
-            for br in left_brackets:
-                if s[:i].endswith(br):
-                    return (i - len(br), br)
-            i -= 1
-        return -1, False
