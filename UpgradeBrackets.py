@@ -4,6 +4,8 @@ class UpgradeBracketsCommand(sublime_plugin.TextCommand):
     """docstring for UpgradeBracketsCommand"""
     
     brackets = [('(', ')'), ('[', ']'), ('\\lvert', '\\rvert'), ('\{', '\}'), ('\|', '\|')]
+    banned_tokens_left = ['\\', '\\left', '\\big'] #  we do not upgrade brackets which were already modified
+    banned_tokens_right = ['\\', '\\right', '\\big'] # or are, in fact, start/end of math environment: \[\], \(\)
     
     def run(self, edit):
         def find_right_bracket(s):
@@ -41,7 +43,17 @@ class UpgradeBracketsCommand(sublime_plugin.TextCommand):
         global_string = self.view.substr(self.view.line(region))
         l, brl = find_left_bracket(global_string[:col])
         r, brr = find_right_bracket(global_string[col:])
+        do_upgrade = False
         if (l >= 0) and (r >= 0) and brackets_match(brl, brr):
+            do_upgrade = True
+        if do_upgrade:
+            for br in banned_tokens_left:
+                if global_string[:l].rstrip().endswith(br):
+                    do_upgrade = False
+            for br in banned_tokens_right:
+                if global_string[:r].rstrip().endswith(br):
+                    do_upgrade = False
+        if do_upgrade:
             global_string = global_string[:l] + '\\left' + global_string[l:col + r] + '\\right'+ global_string[col + r:]
             self.view.replace(edit, self.view.line(region), global_string)
             self.view.sel().clear()  # clear selection and jump to the place where the cursor used to be
